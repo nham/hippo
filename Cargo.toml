@@ -1,0 +1,14 @@
+[package]
+
+name = "hippo"
+version = "0.0.1"
+authors = [ "Nick Hamann <nick@wabbo.org>" ]
+
+[[bin]]
+
+name = "hippo"
+
+[dependencies]
+docopt = "*"
+rustc-serialize = "*"
+
