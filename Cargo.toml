@@ -11,4 +11,6 @@ name = "hippo"
 [dependencies]
 docopt = "*"
 rustc-serialize = "*"
+rusqlite = "0.0.9"
+time = "~0.1.0"
 

@@ -1,10 +1,16 @@
 extern crate "rustc-serialize" as rustc_serialize;
 extern crate docopt;
+extern crate rusqlite;
+extern crate time;
 
 use docopt::Docopt;
+pub use time::Timespec;
+pub use conductor::{Item, ItemId};
+
 use conductor::Conductor;
 
 mod conductor;
+mod persist;
 
 static USAGE: &'static str = "
 Usage:
@@ -19,7 +25,7 @@ Options:
   -h, --help    Show this screen.
 ";
 
-#[derive(RustcDecodable, Show)]
+#[derive(RustcDecodable, Debug)]
 struct Args {
     arg_description: Option<String>,
     arg_id: Option<String>,
