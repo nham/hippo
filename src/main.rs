@@ -72,8 +72,10 @@ fn main() {
         cond.list_items();
 
     } else if args.cmd_review {
-        let n = args.arg_N.unwrap().as_slice().parse().unwrap();
-        cond.review(n);
+        match args.arg_N {
+            Some(n) => cond.review(n.as_slice().parse().unwrap()),
+            None => cond.review(default_review_num),
+        }
 
     } else {
         println!("No command provided");
