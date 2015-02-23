@@ -2,7 +2,9 @@ use super::persist::{Persister, SqlitePersister};
 use super::Timespec;
 use core;
 
-pub type ItemId = usize;
+// doesn't need to be signed, but sqlite uses i64 for rowids and
+// rusqlite only implements ToSql for i64 (not any other integer types)
+pub type ItemId = i64;
 
 pub struct Item {
     pub id: ItemId,
@@ -30,8 +32,10 @@ impl Conductor<SqlitePersister> {
 impl <P: Persister> Conductor<P> {
     pub fn add_item(&self, desc: &str) {
         let init_data = core::init_item();
-        let id = self.persister.add_item(desc, init_data);
-        println!("Item {} has been added", id);
+        match self.persister.add_item(desc, init_data) {
+            Ok(id) => println!("Item {} has been added", id),
+            Err(err) => println!("{}", err),
+        }
     }
 
     pub fn edit_item(&self, id: ItemId, desc: &str) {
@@ -42,12 +46,17 @@ impl <P: Persister> Conductor<P> {
     }
 
     pub fn view_item(&self, id: ItemId) {
-        let item = self.persister.get_item(id).unwrap();
-        println!("{}", core::full_display_item(item));
+        match self.persister.get_item(id) {
+            Ok(item) => println!("{}", core::full_display_item(item)),
+            Err(e) => println!("{}", e),
+        }
     }
 
     pub fn remove_item(&self, id: ItemId) {
-        println!("remove");
+        match self.persister.remove_item(id) {
+            Ok(_) => println!("Item {} has been removed", id),
+            Err(e) => println!("{}", e),
+        }
     }
 
     pub fn list_items(&self) {
