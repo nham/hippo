@@ -9,7 +9,7 @@ pub trait Persister {
     fn update_item(&self, id: ItemId, data: ItemSchedData) -> Result<(), String>;
     fn get_item(&self, id: ItemId) -> Result<Item, String>;
     fn remove_item(&self, id: ItemId) -> Result<(), String>;
-    fn get_items(&self) -> Vec<Item>;
+    fn get_items(&self) -> Result<Vec<Item>, String>;
 }
 
 
@@ -97,17 +97,15 @@ impl Persister for SqlitePersister {
             None => return Err("Item not found".to_string()),
         };
 
-        let data = ItemSchedData {
-            last_reviewed: row.get(2),
-            ff: row.get(3),
-            int_step: row.get(4),
-            iri: row.get(5),
-        };
-
         Ok(Item {
             id: row.get(0),
             desc: row.get(1),
-            data: data
+            data: ItemSchedData {
+                last_reviewed: row.get(2),
+                ff: row.get(3),
+                int_step: row.get(4),
+                iri: row.get(5),
+            },
         })
     }
 
@@ -119,7 +117,36 @@ impl Persister for SqlitePersister {
         }
     }
 
-    fn get_items(&self) -> Vec<Item> {
-        vec![]
+    fn get_items(&self) -> Result<Vec<Item>, String> {
+        let sql = "SELECT id, desc, last_reviewed, ff, int_step, iri FROM items";
+        let mut stmt = match self.conn.prepare(sql) {
+            Ok(s) => s,
+            Err(err) => return Err(err.message),
+        };
+
+        let mut rows = match stmt.query(&[]) {
+            Ok(s) => s,
+            Err(err) => return Err(err.message),
+        };
+
+        let mut v = vec![];
+        for row in rows {
+            match row {
+                Ok(row) => v.push(
+                    Item {
+                        id: row.get(0),
+                        desc: row.get(1),
+                        data: ItemSchedData {
+                            last_reviewed: row.get(2),
+                            ff: row.get(3),
+                            int_step: row.get(4),
+                            iri: row.get(5),
+                        },
+                    }),
+                Err(err) => return Err(err.message),
+            }
+        }
+
+        Ok(v)
     }
 }

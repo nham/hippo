@@ -60,7 +60,12 @@ impl <P: Persister> Conductor<P> {
     }
 
     pub fn list_items(&self) {
-        println!("list");
+        match self.persister.get_items() {
+            Ok(items) => for item in items {
+                println!("{}", core::list_display_item(item));
+            },
+            Err(e) => println!("{}", e),
+        }
     }
 
     pub fn review(&self, n: usize) {
