@@ -10,7 +10,11 @@ You can edit an item's description with
 
     hippo edit <id> <description>
 
-or delete an item with
+or view more an item's scheduling details by
+
+    hippo view <id>
+
+(the above details won't make much sense unless you understand the SM-2 algorithm) or delete an item with
 
     hippo remove <id>
 
@@ -18,10 +22,10 @@ To review items, use
 
     hippo review [<N>]
 
-where <N> is an optional argument for the number of items to review. The default is 20. Typing `hippo` is the same as typing `hippo review` is the same as typing `hippo review 20`.
+where <N> is an optional argument for the number of items to review. The default is 20.
 
 You can also list all items with
 
     hippo list
 
-but I don't think this is a good command and I plan on rethinking it one day.
+but this command isn't currently super useful and I probably need to rethink it.
