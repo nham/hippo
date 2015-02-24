@@ -5,6 +5,10 @@ use time::now_utc;
 
 static INITIAL_FF: f64 = 2.5;
 
+fn days_to_seconds(days: f64) -> i64 {
+    (days * 86400.0).round() as i64
+}
+
 pub fn init_item() -> ItemSchedData {
     ItemSchedData {
         last_reviewed: now_utc().to_timespec(),
@@ -65,16 +69,27 @@ pub fn full_display_item(item: Item) -> String {
             item.data.int_step, item.data.iri)
 }
 
-pub fn filter_review_items(items: Vec<Item>) -> Vec<Item> {
+fn filter_review_items(items: Vec<Item>) -> Vec<Item> {
     let curr_time = now_utc().to_timespec();
-
-    fn days_to_seconds(days: f64) -> i64 {
-        (days * 86400.0).round() as i64
-    }
 
     items.into_iter()
          .filter(|i| (curr_time - i.data.last_reviewed).num_seconds() > days_to_seconds(i.data.iri))
          .collect()
+}
+
+fn sort_review_items(mut items: Vec<Item>) -> Vec<Item> {
+    let curr_time = now_utc().to_timespec();
+
+    let exceeded_by = |it: &Item| -> i64 {
+        (curr_time - it.data.last_reviewed).num_seconds() - days_to_seconds(it.data.iri)
+    };
+
+    items.sort_by(|a, b| exceeded_by(b).cmp(&exceeded_by(a)));
+    items
+}
+
+pub fn prepare_review_items(items: Vec<Item>) -> Vec<Item> {
+    sort_review_items(filter_review_items(items))
 }
 
 

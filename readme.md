@@ -52,7 +52,7 @@ So what happens when you do the `review` command is we first determine which ite
 
     (<current timestamp> - last_reviewed) > iri * 86400
 
-(since last_reviewed is stored as a timestamp). Once we have the list, it should probably be sorted by which items need to be most urgently reviewed. One straightforward way of doing this is ordering by the amount that the time elapsed since last review exceeds the number of seconds determined by the IRI (that is, items which are *more overdue for review* get presented before items that are less overdue). I currently haven't implemented this, however!
+(since last_reviewed is stored as a timestamp). Once we have the list, we sort the items to be reviewed so that they are in order "most urgently in need of review" to "least urgently in need of review". This is done by checking how much `(current time - last review time)` exceeds the IRI in seconds.
 
 Each item presents the description. You're supposed to review the material, and then rate on a scale of 0-5 how familiar the item feels, with 5 being most familiar and 0 being least. So if you think you have a great grasp of the item, rate it a 4 or a 5 and the scheduler will present that item less often. If you feel a bit shaky but still understand it, give is a 2 or a 3. If you totally forgot it, rate it 0 or 1. The significance of these is explained below.
 

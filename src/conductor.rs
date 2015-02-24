@@ -72,7 +72,7 @@ impl <P: Persister> Conductor<P> {
 
     pub fn review(&self, n: usize) {
         match self.persister.get_items() {
-            Ok(items) => self.do_review(core::filter_review_items(items), n),
+            Ok(items) => self.do_review(core::prepare_review_items(items), n),
             Err(e)    => println!("{}", e),
         }
     }
