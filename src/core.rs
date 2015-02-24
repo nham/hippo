@@ -31,7 +31,7 @@ pub fn assess_item(data: &ItemSchedData, fam: u8) -> ItemSchedData {
     // threshold. haven't thought about what effect this has yet.
     // TODO: revisit
 
-    let ff = data.ff + match fam {
+    let mut ff = data.ff + match fam {
         0 => 0.,
         1 => 0.,
         2 => -0.32,
@@ -40,6 +40,10 @@ pub fn assess_item(data: &ItemSchedData, fam: u8) -> ItemSchedData {
         5 => 0.1,
         _ => unreachable!("Internal error: managed to reach unreachable code. I'm impressed.")
     };
+
+    if ff < 1.3 {
+        ff = 1.3;
+    }
 
     ItemSchedData {
         last_reviewed: now_utc().to_timespec(),
