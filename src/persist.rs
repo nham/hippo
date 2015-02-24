@@ -1,5 +1,5 @@
 use rusqlite::SqliteConnection;
-use super::{Timespec, Item, ItemId, ItemSchedData};
+use super::{Item, ItemId, ItemSchedData};
 
 static SQLITE_DBFILE: &'static str = "hippo.sqlite";
 
@@ -22,11 +22,11 @@ impl SqlitePersister {
         let conn = SqliteConnection::open(SQLITE_DBFILE).unwrap();
         conn.execute("CREATE TABLE if not exists items (
                       id integer primary key autoincrement,
-                      desc text UNIQUE,
-                      last_reviewed int,
-                      ff real,
-                      int_step int,
-                      iri real)", &[]).unwrap();
+                      desc text NOT NULL,
+                      last_reviewed text NOT NULL,
+                      ff real NOT NULL,
+                      int_step integer NOT NULL,
+                      iri real NOT NULL)", &[]).unwrap();
 
         SqlitePersister { conn: conn }
     }
@@ -124,7 +124,7 @@ impl Persister for SqlitePersister {
             Err(err) => return Err(err.message),
         };
 
-        let mut rows = match stmt.query(&[]) {
+        let rows = match stmt.query(&[]) {
             Ok(s) => s,
             Err(err) => return Err(err.message),
         };

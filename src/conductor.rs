@@ -87,7 +87,7 @@ impl <P: Persister> Conductor<P> {
                 None => { println!("\nNo more items to review"); return },
             };
 
-            let mut inp: char = ' ';
+            let mut inp: char;
 
             // loop for getting user input
             loop {
@@ -110,8 +110,10 @@ impl <P: Persister> Conductor<P> {
                 n   => {
                     let fam = ((n as isize) - ('0' as isize)) as u8;
                     let new_item_data = core::assess_item(&item.data, fam);
-                    self.persister.update_item(item.id, new_item_data);
-                    reviewed += 1;
+                    match self.persister.update_item(item.id, new_item_data) {
+                        Err(e) => {println!("{}", e); return },
+                        _ => { reviewed += 1; },
+                    }
                 },
             }
 

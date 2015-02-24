@@ -1,7 +1,7 @@
 use std::num::Float;
 
 use super::{Item, ItemSchedData};
-use time::{now_utc, Tm};
+use time::now_utc;
 
 static INITIAL_FF: f64 = 2.5;
 
