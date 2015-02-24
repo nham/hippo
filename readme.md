@@ -14,7 +14,7 @@ or view more an item's scheduling details by
 
     hippo view <id>
 
-(the above details won't make much sense unless you understand the SM-2 algorithm) or delete an item with
+(the above details won't make much sense unless you understand the scheduling algorithm) or delete an item with
 
     hippo remove <id>
 
@@ -34,17 +34,17 @@ but this command isn't currently super useful and I probably need to rethink it.
 
 Each item has four fields that are used to make the review schedule:
 
-    - *last_reviewed*, the timestamp when the item was last reviewed
-    - *ff*, the *familarity factor* which is called "easiness factor" in the original SM-2 algorithm. Why did I change it? I dunno, personal taste? What does it matter? Maybe don't worry about it.
-    - *iri*, the *inter-repetition interval*. This determines how much time should elapse between reviews of an item in days.
-    - *int_step*, mostly a thing for tracking newly learned items.
+  - *last_reviewed*, the timestamp when the item was last reviewed
+  - *ff*, the *familarity factor* which is called "easiness factor" in the original SM-2 algorithm. Why did I change it? I dunno, personal taste? What does it matter? Maybe don't worry about it.
+  - *iri*, the *inter-repetition interval*. This determines how much time should elapse between reviews of an item in days.
+  - *int_step*, mostly a thing for tracking newly learned items.
 
 When a new item is added, the initial values of these fields are:
 
-    - last_reviewed: the time it was created
-    - ff: 2.5
-    - iri: 0.0
-    - int_step: 0
+  - last_reviewed: the time it was created
+  - ff: 2.5
+  - iri: 0.0
+  - int_step: 0
 
 I'm actually unsure about this. An initial IRI of 0 means that the item has to be reviewed immediately. I'm still experimenting with this.
 
