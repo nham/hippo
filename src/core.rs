@@ -55,8 +55,9 @@ pub fn list_display_item(item: Item) -> String {
 }
 
 pub fn full_display_item(item: Item) -> String {
-    format!("{:3} : {}\nLast reviewed: {}\nFF: {}\nint_step: {}\nIRI: {}", 
-            item.id, item.desc, item.data.last_reviewed.sec, item.data.ff, 
+    let dur = now_utc().to_timespec() - item.data.last_reviewed;
+    format!("{:3} : {}\nLast reviewed: {} hours ago\nFF: {}\nint_step: {}\nIRI: {}",
+            item.id, item.desc, dur.num_hours(), item.data.ff,
             item.data.int_step, item.data.iri)
 }
 
