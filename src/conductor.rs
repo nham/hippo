@@ -77,6 +77,14 @@ impl <P: Persister> Conductor<P> {
         }
     }
 
+    pub fn review_item(&self, id: ItemId) {
+        match self.persister.get_item(id) {
+            Ok(item) => self.do_review(vec![item], 1),
+            Err(e)    => println!("{}", e),
+        }
+
+    }
+
     fn do_review(&self, items: Vec<Item>, n: usize) {
         let mut reviewed = 0;
         let mut items_iter = items.iter();

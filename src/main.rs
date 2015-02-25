@@ -15,13 +15,13 @@ mod persist;
 
 static USAGE: &'static str = "
 Usage:
-  hippo [options]
-  hippo review [<N>]
+  hippo review [<N> | --id=<id>]
   hippo add <description>
   hippo edit <id> <description>
   hippo view <id>
   hippo remove <id>
   hippo list
+  hippo (-h | --help)
 
 Options:
   -h, --help    Show this screen.
@@ -32,6 +32,7 @@ struct Args {
     arg_description: Option<String>,
     arg_id: Option<String>,
     arg_N: Option<String>,
+    flag_id: Option<String>,
     cmd_add: bool,
     cmd_edit: bool,
     cmd_view: bool,
@@ -74,7 +75,11 @@ fn main() {
     } else if args.cmd_review {
         match args.arg_N {
             Some(n) => cond.review(n.as_slice().parse().unwrap()),
-            None => cond.review(default_review_num),
+            None =>
+                match args.flag_id {
+                    Some(id) => cond.review_item(id.as_slice().parse().unwrap()),
+                    None     => cond.review(default_review_num),
+                }
         }
 
     } else {

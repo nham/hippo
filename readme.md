@@ -24,6 +24,10 @@ To review items, use
 
 where <N> is an optional argument for the number of items to review. The default is 20.
 
+You can also review a specific item by using the `--id` flag:
+
+    hippo review --id=<id>
+
 You can also list all items with
 
     hippo list
