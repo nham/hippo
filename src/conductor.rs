@@ -61,9 +61,14 @@ impl <P: Persister> Conductor<P> {
         }
     }
 
-    pub fn list_items(&self, search: Option<String>) {
+    pub fn list_items(&self, search: Option<String>, unreviewed: bool) {
         match self.persister.get_items() {
-            Ok(items) =>
+            Ok(mut items) => {
+                // only show items in need of review
+                if unreviewed {
+                    items = core::filter_unreviewed_items(items);
+                }
+
                 match search {
                     Some(text) =>
                         for item in items {
@@ -75,7 +80,8 @@ impl <P: Persister> Conductor<P> {
                         for item in items {
                             println!("{}", core::list_display_item(item));
                         },
-                },
+                }
+            }
             Err(e)    => println!("{}", e),
         }
     }

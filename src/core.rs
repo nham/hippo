@@ -69,7 +69,9 @@ pub fn full_display_item(item: Item) -> String {
             item.data.int_step, item.data.iri)
 }
 
-fn filter_review_items(items: Vec<Item>) -> Vec<Item> {
+// Given a vector of items, returns a new vector with only the items
+// that are in need of review
+pub fn filter_unreviewed_items(items: Vec<Item>) -> Vec<Item> {
     let curr_time = now_utc().to_timespec();
 
     items.into_iter()
@@ -89,7 +91,7 @@ fn sort_review_items(mut items: Vec<Item>) -> Vec<Item> {
 }
 
 pub fn prepare_review_items(items: Vec<Item>) -> Vec<Item> {
-    sort_review_items(filter_review_items(items))
+    sort_review_items(filter_unreviewed_items(items))
 }
 
 

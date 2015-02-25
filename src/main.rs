@@ -20,7 +20,7 @@ Usage:
   hippo edit <id> <description>
   hippo view <id>
   hippo remove <id>
-  hippo list [<string>]
+  hippo list [--unreviewed] [<string>]
   hippo (-h | --help)
 
 Options:
@@ -34,6 +34,7 @@ struct Args {
     arg_N: Option<String>,
     arg_string: Option<String>,
     flag_id: Option<String>,
+    flag_unreviewed: bool,
     cmd_add: bool,
     cmd_edit: bool,
     cmd_view: bool,
@@ -71,7 +72,7 @@ fn main() {
         cond.remove_item(id);
 
     } else if args.cmd_list {
-        cond.list_items(args.arg_string);
+        cond.list_items(args.arg_string, args.flag_unreviewed);
 
     } else if args.cmd_review {
         match args.arg_N {
