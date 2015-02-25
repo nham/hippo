@@ -61,11 +61,21 @@ impl <P: Persister> Conductor<P> {
         }
     }
 
-    pub fn list_items(&self) {
+    pub fn list_items(&self, search: Option<String>) {
         match self.persister.get_items() {
-            Ok(items) => for item in items {
-                println!("{}", core::list_display_item(item));
-            },
+            Ok(items) =>
+                match search {
+                    Some(text) =>
+                        for item in items {
+                            if item.desc.contains(text.as_slice()) {
+                                println!("{}", core::list_display_item(item));
+                            }
+                        },
+                    None =>
+                        for item in items {
+                            println!("{}", core::list_display_item(item));
+                        },
+                },
             Err(e)    => println!("{}", e),
         }
     }

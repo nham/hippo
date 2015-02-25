@@ -30,9 +30,9 @@ You can also review a specific item by using the `--id` flag:
 
 You can also list all items with
 
-    hippo list
+    hippo list [<string>]
 
-but this command isn't currently super useful and I probably need to rethink it.
+where <string> is an optional search text argument. Only item with descriptions containing the string will be displayed.
 
 # Scheduling algorithm
 

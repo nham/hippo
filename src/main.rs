@@ -20,7 +20,7 @@ Usage:
   hippo edit <id> <description>
   hippo view <id>
   hippo remove <id>
-  hippo list
+  hippo list [<string>]
   hippo (-h | --help)
 
 Options:
@@ -32,6 +32,7 @@ struct Args {
     arg_description: Option<String>,
     arg_id: Option<String>,
     arg_N: Option<String>,
+    arg_string: Option<String>,
     flag_id: Option<String>,
     cmd_add: bool,
     cmd_edit: bool,
@@ -70,7 +71,7 @@ fn main() {
         cond.remove_item(id);
 
     } else if args.cmd_list {
-        cond.list_items();
+        cond.list_items(args.arg_string);
 
     } else if args.cmd_review {
         match args.arg_N {
