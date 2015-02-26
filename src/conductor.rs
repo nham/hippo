@@ -1,4 +1,7 @@
 use std::old_io::stdin;
+use std::env;
+use std::path::PathBuf;
+use std::fs::{self, PathExt};
 
 use super::persist::{Persister, SqlitePersister};
 use super::Timespec;
@@ -27,7 +30,16 @@ pub struct Conductor<P: Persister> {
 
 impl Conductor<SqlitePersister> {
     pub fn new() -> Self {
-        Conductor { persister: SqlitePersister::new() }
+        let save_path = save_dir();
+
+        if !save_path.exists() {
+            match fs::create_dir_all(&save_path) {
+                Err(err) => panic!("Uh oh: {}", err),
+                Ok(_) => {},
+            }
+        }
+
+        Conductor { persister: SqlitePersister::new(save_path) }
     }
 }
 
@@ -144,5 +156,36 @@ impl <P: Persister> Conductor<P> {
         }
 
         println!("\nFinished reviewing.");
+    }
+}
+
+
+fn save_dir() -> PathBuf {
+    // On Linux we will try to use
+    //
+    //   $XDG_DATA_HOME/hippo
+    //
+    // or
+    //
+    //   $HOME/.local/share/
+    //
+    // as a fallback. (If both don't exist (somehow?), use the current folder)
+    //
+    // On Windows I guess I should use %AppData%? I don't intend to implement
+    // this just yet.
+
+    match env::var("XDG_DATA_HOME") {
+        Ok(dir) => { let mut p = PathBuf::new(&dir); p.push("hippo"); p },
+        Err(_)  =>
+            match env::var("HOME") {
+                Ok(dir) => {
+                    let mut p = PathBuf::new(&dir);
+                    p.push(".local");
+                    p.push("share");
+                    p.push("hippo");
+                    p
+                },
+                Err(_)  => PathBuf::new(""),
+            },
     }
 }
