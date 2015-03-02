@@ -3,9 +3,10 @@ use std::env;
 use std::path::PathBuf;
 use std::fs::{self, PathExt};
 
-use super::persist::{Persister, SqlitePersister};
 use super::Timespec;
+use persist::{Persister, SqlitePersister};
 use core;
+use fuzzy::fuzzy_contains;
 
 // doesn't need to be signed, but sqlite uses i64 for rowids and
 // rusqlite only implements ToSql for i64 (not any other integer types)
@@ -73,7 +74,7 @@ impl <P: Persister> Conductor<P> {
         }
     }
 
-    pub fn list_items(&self, search: Option<String>, unreviewed: bool) {
+    pub fn list_items(&self, search: Option<String>, unreviewed: bool, fuzzy: bool) {
         match self.persister.get_items() {
             Ok(mut items) => {
                 // only show items in need of review
@@ -83,9 +84,18 @@ impl <P: Persister> Conductor<P> {
 
                 match search {
                     Some(text) =>
-                        for item in items {
-                            if item.desc.contains(text.as_slice()) {
-                                println!("{}", core::list_display_item(item));
+                        // Barf.
+                        if fuzzy {
+                            for item in items {
+                                if fuzzy_contains(text.as_slice(), item.desc.as_slice()) {
+                                    println!("{}", core::list_display_item(item));
+                                }
+                            }
+                        } else {
+                            for item in items {
+                                if item.desc.contains(text.as_slice()) {
+                                    println!("{}", core::list_display_item(item));
+                                }
                             }
                         },
                     None =>

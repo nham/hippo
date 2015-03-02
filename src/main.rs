@@ -12,6 +12,7 @@ use conductor::Conductor;
 mod conductor;
 mod core;
 mod persist;
+mod fuzzy;
 
 static USAGE: &'static str = "
 Usage:
@@ -20,7 +21,7 @@ Usage:
   hippo edit <id> <description>
   hippo view <id>
   hippo remove <id>
-  hippo list [--unreviewed] [<string>]
+  hippo list [--unreviewed --fuzzy] [<string>]
   hippo (-h | --help)
 
 Options:
@@ -35,6 +36,7 @@ struct Args {
     arg_string: Option<String>,
     flag_id: Option<String>,
     flag_unreviewed: bool,
+    flag_fuzzy: bool,
     cmd_add: bool,
     cmd_edit: bool,
     cmd_view: bool,
@@ -72,7 +74,7 @@ fn main() {
         cond.remove_item(id);
 
     } else if args.cmd_list {
-        cond.list_items(args.arg_string, args.flag_unreviewed);
+        cond.list_items(args.arg_string, args.flag_unreviewed, args.flag_fuzzy);
 
     } else if args.cmd_review {
         match args.arg_N {
