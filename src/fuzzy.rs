@@ -37,7 +37,7 @@ impl<T> IndexMut<(usize, usize)> for MemoMatrix<T> {
 }
 
 pub fn fuzzy_contains<'a, 'b>(p: &'a str, t: &'b str) -> bool {
-    fuzzy_contains_err(p, t, 2)
+    fuzzy_contains_err(p, t, 1)
 }
 
 fn fuzzy_contains_err<'a, 'b>(p: &'a str, t: &'b str, k: usize) -> bool { 
