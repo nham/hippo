@@ -47,10 +47,8 @@ When a new item is added, the initial values of these fields are:
 
   - last_reviewed: the time it was created
   - ff: 2.5
-  - iri: 0.0
-  - int_step: 0
-
-I'm actually unsure about this. An initial IRI of 0 means that the item has to be reviewed immediately. I'm still experimenting with this.
+  - iri: 1.0
+  - int_step: 1
 
 So what happens when you do the `review` command is we first determine which items need to be reviewed by finding out which items have
 

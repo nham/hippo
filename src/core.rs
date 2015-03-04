@@ -13,8 +13,8 @@ pub fn init_item() -> ItemSchedData {
     ItemSchedData {
         last_reviewed: now_utc().to_timespec(),
         ff: INITIAL_FF,
-        int_step: 0,
-        iri: 0.0,
+        int_step: 1,
+        iri: 1.0,
     }
 }
 
