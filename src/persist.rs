@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use rusqlite::SqliteConnection;
-use super::{Item, ItemId, ItemSchedData};
+use super::{Item, ItemId, ItemSchedData, Review};
 
 static SQLITE_DBFILE: &'static str = "hippo.sqlite";
 
@@ -12,6 +12,7 @@ pub trait Persister {
     fn get_item(&self, id: ItemId) -> Result<Item, String>;
     fn remove_item(&self, id: ItemId) -> Result<(), String>;
     fn get_items(&self) -> Result<Vec<Item>, String>;
+    fn add_review(&self, review: Review) -> Result<(), String>;
 }
 
 
@@ -31,13 +32,19 @@ impl SqlitePersister {
                       int_step integer NOT NULL,
                       iri real NOT NULL)", &[]).unwrap();
 
+        conn.execute("CREATE TABLE if not exists reviews (
+                      id integer primary key autoincrement,
+                      review_time text NOT NULL,
+                      item_id integer NOT NULL)", &[]).unwrap();
+
         SqlitePersister { conn: conn }
     }
 }
 
 impl Persister for SqlitePersister {
     fn add_item(&self, desc: &str, data: ItemSchedData) -> Result<ItemId, String> {
-        let sql = "INSERT INTO items (desc, last_reviewed, ff, int_step, iri)
+        let sql = "INSERT INTO items
+                   (desc, last_reviewed, ff, int_step, iri)
                    VALUES ($1, $2, $3, $4, $5)";
 
         let res = self.conn.execute(sql, &[&desc, &data.last_reviewed,
@@ -121,7 +128,8 @@ impl Persister for SqlitePersister {
     }
 
     fn get_items(&self) -> Result<Vec<Item>, String> {
-        let sql = "SELECT id, desc, last_reviewed, ff, int_step, iri FROM items";
+        let sql = "SELECT id, desc, last_reviewed, ff, int_step, iri
+                   FROM items";
         let mut stmt = match self.conn.prepare(sql) {
             Ok(s) => s,
             Err(err) => return Err(err.message),
@@ -151,5 +159,18 @@ impl Persister for SqlitePersister {
         }
 
         Ok(v)
+    }
+
+    fn add_review(&self, review: Review) -> Result<(), String> {
+        let sql = "INSERT INTO reviews (review_time, item_id)
+                   VALUES ($1, $2)";
+
+        let res = self.conn.execute(sql, &[&review.review_time,
+                                           &review.item_id]);
+
+        match res {
+            Ok(_) => Ok(()),
+            Err(err) => Err(err.message),
+        }
     }
 }

@@ -5,7 +5,7 @@ extern crate time;
 
 use docopt::Docopt;
 pub use time::Timespec;
-pub use conductor::{Item, ItemId, ItemSchedData};
+pub use conductor::{Item, ItemId, ItemSchedData, Review};
 
 use conductor::Conductor;
 

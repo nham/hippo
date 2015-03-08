@@ -25,6 +25,11 @@ pub struct ItemSchedData {
     pub iri: f64,
 }
 
+pub struct Review {
+    pub review_time: Timespec,
+    pub item_id: ItemId,
+}
+
 pub struct Conductor<P: Persister> {
     persister: P
 }
@@ -156,7 +161,18 @@ impl <P: Persister> Conductor<P> {
                 n   => {
                     let fam = ((n as isize) - ('0' as isize)) as u8;
                     let new_item_data = core::assess_item(&item.data, fam);
+                    let time = new_item_data.last_reviewed;
                     match self.persister.update_item(item.id, new_item_data) {
+                        Err(e) => {println!("{}", e); return },
+                        _ => {},
+                    }
+
+                    let rev = Review {
+                        item_id: item.id,
+                        review_time: time
+                    };
+
+                    match self.persister.add_review(rev) {
                         Err(e) => {println!("{}", e); return },
                         _ => { reviewed += 1; },
                     }
