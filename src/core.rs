@@ -4,6 +4,8 @@ use super::{Item, ItemSchedData};
 use time::now_utc;
 
 static INITIAL_FF: f64 = 2.5;
+static STEP_1_IRI: f64: 2.0;
+static STEP_2_IRI: f64: 4.0;
 
 fn days_to_seconds(days: f64) -> i64 {
     (days * 86400.0).round() as i64
@@ -14,7 +16,7 @@ pub fn init_item() -> ItemSchedData {
         last_reviewed: now_utc().to_timespec(),
         ff: INITIAL_FF,
         int_step: 1,
-        iri: 1.0,
+        iri: STEP_1_IRI,
     }
 }
 
@@ -26,8 +28,8 @@ pub fn assess_item(data: &ItemSchedData, fam: u8) -> ItemSchedData {
     };
 
     let iri = match int_step {
-        1 => 1.0,
-        2 => 3.0,
+        1 => STEP_1_IRI,
+        2 => STEP_2_IRI,
         _ => data.iri + data.ff
     };
 
