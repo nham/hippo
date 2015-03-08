@@ -22,7 +22,7 @@ pub struct SqlitePersister {
 impl SqlitePersister {
     pub fn new(mut save_dir: PathBuf) -> Self {
         save_dir.push(SQLITE_DBFILE);
-        let conn = SqliteConnection::open(save_dir.to_str().unwrap()).unwrap();
+        let conn = SqliteConnection::open(&save_dir).unwrap();
         conn.execute("CREATE TABLE if not exists items (
                       id integer primary key autoincrement,
                       desc text NOT NULL,
