@@ -56,13 +56,13 @@ fn main() {
 
     if args.cmd_add {
         let desc_string = args.arg_description.unwrap();
-        let desc = desc_string.as_slice();
+        let desc = &desc_string[..];
         cond.add_item(desc);
 
     } else if args.cmd_edit {
         let id = args.arg_id.unwrap().as_slice().parse().unwrap();
         let desc_string = args.arg_description.unwrap();
-        let desc = desc_string.as_slice();
+        let desc = &desc_string[..];
         cond.edit_item(id, desc);
 
     } else if args.cmd_view {
