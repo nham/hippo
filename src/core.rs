@@ -4,8 +4,8 @@ use super::{Item, ItemSchedData};
 use time::now_utc;
 
 static INITIAL_FF: f64 = 3.0;
-static STEP_1_IRI: f64: 2.0;
-static STEP_2_IRI: f64: 4.0;
+static STEP_1_IRI: f64 = 2.0;
+static STEP_2_IRI: f64 = 4.0;
 
 fn days_to_seconds(days: f64) -> i64 {
     (days * 86400.0).round() as i64
